@@ -22,6 +22,7 @@ Shaders:
   - Stage: Compute
     Entry: main
     DispatchSize: [4, 1, 1]
+    MetalThreadGroupSize: [4, 1, 1]
 Buffers:
   - Name: InUDS
     Format: Hex32

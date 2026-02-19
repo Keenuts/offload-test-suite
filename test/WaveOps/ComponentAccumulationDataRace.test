@@ -33,6 +33,7 @@ Shaders:
   - Stage: Compute
     Entry: main
     DispatchSize: [1, 1, 1]
+    MetalThreadGroupSize: [128, 4, 1]
 Buffers:
   - Name: Out
     Format: UInt32
@@ -64,9 +65,6 @@ DescriptorSets:
 
 # Bug https://github.com/llvm/offload-test-suite/issues/445
 # XFAIL: DirectX && Intel
-
-# Bug: https://github.com/llvm/offload-test-suite/issues/452
-# XFAIL: Metal
 
 # RUN: split-file %s %t
 # RUN: %dxc_target -T cs_6_5 -Fo %t.o %t/source.hlsl

@@ -42,6 +42,7 @@ Shaders:
   - Stage: Compute
     Entry: main
     DispatchSize: [1, 1, 1]
+    MetalThreadGroupSize: [128, 4, 1]
 Buffers:
   - Name: In
     Format: Float32
@@ -82,9 +83,6 @@ DescriptorSets:
 
 # Bug https://github.com/llvm/llvm-project/issues/172577
 # XFAIL: Clang && Vulkan
-
-# Bug https://github.com/llvm/offload-test-suite/issues/452
-# XFAIL: Metal
 
 # RUN: split-file %s %t
 # RUN: %dxc_target -T cs_6_0 -Fo %t.o %t/source.hlsl
