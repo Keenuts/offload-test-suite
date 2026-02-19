@@ -471,6 +471,10 @@ void MappingTraits<offloadtest::Shader>::mapping(IO &I,
     // or moved into the Shaders structure.
     MutableArrayRef<int> MutableDispatchSize(S.DispatchSize);
     I.mapRequired("DispatchSize", MutableDispatchSize);
+
+    // Metal shaders have no `numthreads` equivalent.
+    MutableArrayRef<int> MutableMetalThreadGroupSize(S.MetalThreadGroupSize);
+    I.mapOptional("MetalThreadGroupSize", MutableMetalThreadGroupSize);
   }
 }
 

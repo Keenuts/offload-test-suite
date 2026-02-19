@@ -355,14 +355,24 @@ class MTLDevice : public offloadtest::Device {
       CmdEncoder->useResource(IS.Buffers[I],
                               MTL::ResourceUsageRead | MTL::ResourceUsageWrite);
 
-    const NS::UInteger TGS =
-        IS.ComputePipeline->maxTotalThreadsPerThreadgroup();
     const llvm::ArrayRef<int> DispatchSize =
         llvm::ArrayRef<int>(P.Shaders[0].DispatchSize);
-    const MTL::Size GridSize =
-        MTL::Size(TGS * DispatchSize[0], DispatchSize[1], DispatchSize[2]);
-    const MTL::Size GroupSize(TGS, 1, 1);
-    CmdEncoder->dispatchThreads(GridSize, GroupSize);
+
+    MTL::Size TGS;
+    if (P.Shaders[0].MetalThreadGroupSize[0] != 0) {
+      const auto& Entry = P.Shaders[0].MetalThreadGroupSize;
+      TGS = MTL::Size(Entry[0], Entry[1], Entry[2]);
+    } else {
+      llvm::outs() << "warning: no MetalThreadGroupSize provided, using max ThreadGroup size.\n";
+      const NS::UInteger MaxTGS = IS.ComputePipeline->maxTotalThreadsPerThreadgroup();
+      TGS = MTL::Size(MaxTGS, 1, 1);
+    }
+
+    const MTL::Size GridSize = MTL::Size(TGS.width * DispatchSize[0],
+                                         TGS.height * DispatchSize[1],
+                                         TGS.depth * DispatchSize[2]);
+    CmdEncoder->dispatchThreads(GridSize, TGS);
+
     CmdEncoder->memoryBarrier(MTL::BarrierScopeBuffers);
 
     CmdEncoder->endEncoding();

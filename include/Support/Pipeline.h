@@ -389,6 +389,7 @@ struct Shader {
   std::string Entry;
   std::unique_ptr<llvm::MemoryBuffer> Shader;
   int DispatchSize[3];
+  int MetalThreadGroupSize[3] = { 0, 0, 0 };
   llvm::SmallVector<SpecializationConstant> SpecializationConstants;
 };
 
